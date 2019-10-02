@@ -14,7 +14,7 @@ import (
 func ServerGetImage(w http.ResponseWriter, r *http.Request) {
 	//img := image.NewGray16(image.Rect(0, 0, 2394, 2850))
 	img := image.NewGray16(image.Rect(0, 0, 1, 1))
-	img.SetGray16(0, 0, color.Gray16{Y: 42000})
+	img.SetGray16(0, 0, color.Gray16{Y: 42})
 
 	// Print created
 	log.Print("Pixels: ", img)

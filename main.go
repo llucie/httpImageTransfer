@@ -18,8 +18,9 @@ func main() {
 
 	if args[1] == "client" {
 		log.Print("Run Client, listening on port 8080")
-		router.Methods("GET").Path("/image").HandlerFunc(ClientGetImage)
-		log.Fatal(http.ListenAndServe(":8080", router))
+		//router.Methods("GET").Path("/image").HandlerFunc(ClientGetImage)
+		//log.Fatal(http.ListenAndServe(":8080", router))
+		sendGetRequest()
 	} else if args[1] == "server" {
 		log.Print("Run Server, listening on port 4242")
 		router.Methods("GET").Path("/image").HandlerFunc(ServerGetImage)
