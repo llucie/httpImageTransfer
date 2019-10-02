@@ -8,12 +8,13 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // ServerGetImage TODO
 func ServerGetImage(w http.ResponseWriter, r *http.Request) {
 	//img := image.NewGray16(image.Rect(0, 0, 2394, 2850))
-	img := image.NewGray16(image.Rect(0, 0, 1, 1))
+	img := image.NewGray16(image.Rect(0, 0, 2, 1))
 	img.SetGray16(0, 0, color.Gray16{Y: 42})
 
 	// Print created
@@ -26,7 +27,11 @@ func ServerGetImage(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "image/jpeg")
 	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+
+	start := time.Now()
 	if _, err := w.Write(buffer.Bytes()); err != nil {
 		log.Println("unable to write image.")
 	}
+	elapsed := time.Since(start)
+	log.Printf("Write image took %s", elapsed)
 }
