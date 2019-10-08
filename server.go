@@ -1,37 +1,41 @@
 package main
 
 import (
-	"bytes"
 	"image"
-	"image/color"
-	"image/jpeg"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
+
+var img *image.Gray16
+
+func createImg() {
+	img = image.NewGray16(image.Rect(0, 0, 2850, 2394))
+
+	log.Info("Image bytes size: ", len(img.Pix))
+
+	pix := 0
+	for x := 0; x < len(img.Pix); x++ {
+		img.Pix[x] = uint8(pix)
+		pix++
+		if pix == 256 {
+			pix = 0
+		}
+	}
+}
 
 // ServerGetImage TODO
 func ServerGetImage(w http.ResponseWriter, r *http.Request) {
-	//img := image.NewGray16(image.Rect(0, 0, 2394, 2850))
-	img := image.NewGray16(image.Rect(0, 0, 2, 1))
-	img.SetGray16(0, 0, color.Gray16{Y: 42})
-
-	// Print created
-	log.Print("Pixels: ", img)
-
-	buffer := new(bytes.Buffer)
-	if err := jpeg.Encode(buffer, img, nil); err != nil {
-		log.Println("unable to encode image.")
-	}
-
-	w.Header().Set("Content-Type", "image/jpeg")
-	w.Header().Set("Content-Length", strconv.Itoa(len(buffer.Bytes())))
+	w.Header().Set("Content-Length", strconv.Itoa(len(img.Pix)))
+	log.Info("Request received, writing image")
 
 	start := time.Now()
-	if _, err := w.Write(buffer.Bytes()); err != nil {
-		log.Println("unable to write image.")
+
+	if _, err := w.Write(img.Pix); err != nil {
+		log.Error("unable to write image.")
 	}
 	elapsed := time.Since(start)
-	log.Printf("Write image took %s", elapsed)
+	log.Info("Write image took ", elapsed)
 }
